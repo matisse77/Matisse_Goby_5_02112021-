@@ -8,3 +8,13 @@ function idVerification() {
     console.log("Error, no Id found in the URL");
   }
 }
+
+async function getInfoById() {
+  let id = idVerification();
+  try {
+    let response = await fetch(`http://localhost:3000/api/products/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.log("Error : " + error);
+  }
+}
