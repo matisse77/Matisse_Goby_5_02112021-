@@ -33,3 +33,20 @@ async function getInfoById() {
     document.getElementById("colors").innerHTML += htmlContent;
   });
 })();
+
+const addToCartBtn = document.getElementById("addToCart");
+addToCartBtn.addEventListener("click", () => {
+  const itemId = idVerification();
+  const itemColor = document.getElementById("colors").value;
+  const itemQuantity = document.getElementById("quantity").value;
+
+  if (itemColor === "") {
+    alert("Il est nécessaire de choisir une couleur");
+  } else if (itemQuantity == 0) {
+    alert("Il faut au moins ajouter un Kanap");
+  } else {
+    const itemInCart = [itemId, itemColor];
+    localStorage.setItem(itemInCart, itemQuantity);
+    window.location.href = "./cart.html";
+  }
+});
