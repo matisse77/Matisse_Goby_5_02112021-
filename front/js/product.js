@@ -18,3 +18,18 @@ async function getInfoById() {
     console.log("Error : " + error);
   }
 }
+
+(async function renderItem() {
+  let item = await getInfoById();
+  document.querySelector(
+    ".item__img"
+  ).innerHTML += `<img src="${item.imageUrl}" alt="${item.altTxt}">`;
+  document.getElementById("title").innerHTML += item.name;
+  document.getElementById("price").innerHTML += item.price;
+  document.getElementById("description").innerHTML += item.description;
+
+  item.colors.forEach((color) => {
+    let htmlContent = `<option value="${color}">${color}</option>`;
+    document.getElementById("colors").innerHTML += htmlContent;
+  });
+})();
