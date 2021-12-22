@@ -72,3 +72,16 @@ function totalPriceRefresh() {
   let totalPriceDisplay = document.getElementById("totalPrice");
   totalPriceDisplay.innerHTML = totalCartPrice;
 }
+
+function totalItemInCartRefresh() {
+  let quantitySelector = document.querySelectorAll(".itemQuantity");
+  let itemAmount = 0;
+  for (let i = 0; i < quantitySelector.length; i++) {
+    itemAmount += parseInt(quantitySelector[i].value);
+  }
+  const totalQuantityDisplay = document.getElementById("totalQuantity");
+  totalQuantityDisplay.innerHTML = itemAmount;
+
+  totalPriceRefresh();
+  checkIfCartEmpty();
+}
