@@ -9,3 +9,10 @@ async function getInfoWithId(i) {
     console.log("Error : " + error);
   }
 }
+
+function checkIfCartEmpty() {
+  if (localStorage.length == 0) {
+    document.getElementById("cart__items").innerHTML =
+      "<p >Il n'y a pas encore de Kanap ici, visitez <a href='./index.html' style=' color:white; font-weight:700'>notre séléction</a>.</p>";
+  }
+}
