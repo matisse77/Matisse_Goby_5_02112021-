@@ -60,3 +60,15 @@ function checkIfCartEmpty() {
   totalItemInCartRefresh();
   totalPriceRefresh();
 })();
+
+function totalPriceRefresh() {
+  let quantitySelector = document.querySelectorAll(".itemQuantity");
+  let totalCartPrice = 0;
+  for (let i = 0; i < quantitySelector.length; i++) {
+    let articleDOM = quantitySelector[i].closest("article");
+    let individualPrice = articleDOM.dataset.price;
+    totalCartPrice += parseInt(quantitySelector[i].value) * individualPrice;
+  }
+  let totalPriceDisplay = document.getElementById("totalPrice");
+  totalPriceDisplay.innerHTML = totalCartPrice;
+}
