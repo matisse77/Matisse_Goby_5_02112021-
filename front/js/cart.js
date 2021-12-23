@@ -152,4 +152,15 @@ function userInputVerification() {
     }
   }
 
+  function lastNameValid() {
+    const userLastName = userForm.lastName;
+    const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
+    if (/^[A-Za-z]{2,20}$/.test(userLastName)) {
+      lastNameErrorMsg.innerText = "";
+      return true;
+    } else {
+      lastNameErrorMsg.innerText =
+        "Votre nom ne peut contenir que des lettres, de 2 à 20 caractères.";
+    }
+  }
  
