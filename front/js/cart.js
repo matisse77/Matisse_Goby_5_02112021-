@@ -136,3 +136,20 @@ class Form {
     this.email = document.getElementById("email").value;
   }
 }
+
+function userInputVerification() {
+  const userForm = new Form();
+
+  function firstNameValid() {
+    const userFirstName = userForm.firstName;
+    const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
+    if (/^([A-Za-z]{3,20})?([-]{0,1})?([A-Za-z]{3,20})$/.test(userFirstName)) {
+      firstNameErrorMsg.innerText = "";
+      return true;
+    } else {
+      firstNameErrorMsg.innerText =
+        "Votre prénom ne peut contenir que des lettres, de 3 à 20 caractères.";
+    }
+  }
+
+ 
