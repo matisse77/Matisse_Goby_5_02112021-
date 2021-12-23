@@ -105,3 +105,24 @@ function deleteItem() {
     });
   }
 }
+
+function itemQuantityRefresh() {
+  let quantitySelector = document.querySelectorAll(".itemQuantity");
+  for (let i = 0; i < quantitySelector.length; i++) {
+    quantitySelector[i].addEventListener("change", (e) => {
+      e.preventDefault();
+
+      let articleDOM = quantitySelector[i].closest("article");
+      let itemId = articleDOM.dataset.id;
+      let itemColor = articleDOM.dataset.color;
+      let localStorageKey = [itemId, itemColor];
+      let itemQuantity = e.target.value;
+      if (itemQuantity == 0) {
+        alert("Il faut au moins ajouter un Kanap");
+      }
+      localStorage.setItem(localStorageKey, itemQuantity);
+
+      totalItemInCartRefresh();
+    });
+  }
+}
