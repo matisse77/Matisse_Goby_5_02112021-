@@ -126,3 +126,13 @@ function itemQuantityRefresh() {
     });
   }
 }
+
+class Form {
+  constructor() {
+    this.firstName = document.getElementById("firstName").value;
+    this.lastName = document.getElementById("lastName").value;
+    this.adress = document.getElementById("address").value;
+    this.city = document.getElementById("city").value;
+    this.email = document.getElementById("email").value;
+  }
+}
