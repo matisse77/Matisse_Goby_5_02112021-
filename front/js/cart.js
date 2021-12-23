@@ -163,4 +163,14 @@ function userInputVerification() {
         "Votre nom ne peut contenir que des lettres, de 2 à 20 caractères.";
     }
   }
- 
+  
+ function adressValid() {
+		const userAdress = userForm.adress;
+		const addressErrorMsg = document.getElementById("addressErrorMsg");
+		if (/[^§]{5,50}$/.test(userAdress)) {
+			addressErrorMsg.innerText = "";
+			return true;
+		} else {
+			addressErrorMsg.innerText = "L'adresse semble incorrect.";
+		}
+	}
