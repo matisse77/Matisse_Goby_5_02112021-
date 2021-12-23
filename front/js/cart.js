@@ -163,7 +163,7 @@ function userInputVerification() {
         "Votre nom ne peut contenir que des lettres, de 2 à 20 caractères.";
     }
   }
-  
+
  function adressValid() {
 		const userAdress = userForm.adress;
 		const addressErrorMsg = document.getElementById("addressErrorMsg");
@@ -172,5 +172,16 @@ function userInputVerification() {
 			return true;
 		} else {
 			addressErrorMsg.innerText = "L'adresse semble incorrect.";
+		}
+	}
+  
+  function cityValid() {
+		const userCity = userForm.city;
+		const cityErrorMsg = document.getElementById("cityErrorMsg");
+		if (/^[A-Za-z]{2,20}$/.test(userCity)) {
+			cityErrorMsg.innerText = "";
+			return true;
+		} else {
+			cityErrorMsg.innerText = "La ville ne peut contenir que des lettres, de 2 à 20 caractères.";
 		}
 	}
