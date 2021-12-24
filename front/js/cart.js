@@ -210,3 +210,14 @@ function userInputVerification() {
     console.log("Unvalid form input.");
   }
 }
+
+function productToSend() {
+  let userBasket = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    let idColor = localStorage.key(i);
+    let idColorArray = idColor.split(",");
+    let id = idColorArray[0];
+    userBasket.push(id);
+  }
+  return userBasket;
+}
