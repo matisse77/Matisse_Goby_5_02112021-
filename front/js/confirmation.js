@@ -1,3 +1,4 @@
+// Getting the order Id with the URL
 function idRecuperation() {
   let url = new URL(window.location.href);
   let searchParams = new URLSearchParams(url.search);

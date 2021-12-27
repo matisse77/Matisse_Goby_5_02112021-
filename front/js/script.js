@@ -1,3 +1,4 @@
+// Get all the information from Bilal's API
 async function getItems() {
   try {
     let response = await fetch("http://localhost:3000/api/products");
@@ -7,11 +8,12 @@ async function getItems() {
   }
 }
 
+// Handle the render on the HTML
 (async function renderItems() {
   let items = await getItems();
   let htmlRender = "";
   items.forEach((item) => {
-    htmlRender += `
+    let htmlContent = `
 		<a href="./product.html?id=${item._id}">
 			<article>
 				<img src="${item.imageUrl}" alt="${item.altTxt}">
@@ -22,5 +24,6 @@ async function getItems() {
 		`;
     htmlRender += htmlContent;
   });
-  document.getElementById("items").innerHTML = htmlRender;
+  const itemContainer = document.getElementById("items");
+  itemContainer.innerHTML += htmlRender;
 })();

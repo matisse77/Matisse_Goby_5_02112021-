@@ -1,3 +1,6 @@
+/*** LOCAL STORAGE & DISPLAY ON CART PAGE ***/
+
+// Get id from localStorage key(i)
 async function getInfoWithId(i) {
   let idColorStr = localStorage.key(i);
   let idColorArray = idColorStr.split(",");
@@ -10,19 +13,21 @@ async function getInfoWithId(i) {
   }
 }
 
+// Empty cart verification
 function checkIfCartEmpty() {
   if (localStorage.length == 0) {
     document.getElementById("cart__items").innerHTML =
-      "<p >Il n'y a pas encore de Kanap ici, visitez <a href='./index.html' style=' color:white; font-weight:700'>notre séléction</a>.</p>";
+      "<p >Il n'y a pas encore de Kanap ici, visitez <a href='./index.html' style=' color:white; font-weight:700'>notre séléction 🛋️</a>.</p>";
   }
 }
 
+// Push dynamically each element on the HTML, then enable associate function to them
 (async function renderEachItem() {
   let htmlRender = "";
   const itemContainer = document.getElementById("cart__items");
-
+  // First check if cart is empty
   checkIfCartEmpty();
-
+  // Else begin the loop
   for (let i = 0; i < localStorage.length; i++) {
     let item = await getInfoWithId(i);
     let htmlContent = `
@@ -55,12 +60,20 @@ function checkIfCartEmpty() {
     htmlRender += htmlContent;
   }
   itemContainer.innerHTML += htmlRender;
+
+  // Enable deleting item function
   deleteItem();
+  // Enable quantity modification
   itemQuantityRefresh();
+  // Initialise the amount total of article
   totalItemInCartRefresh();
+  // Initialise the total price of the cart
   totalPriceRefresh();
 })();
 
+/*** ITEMS DATA MANIPULATION ***/
+
+// Actualise the total price of the cart
 function totalPriceRefresh() {
   let quantitySelector = document.querySelectorAll(".itemQuantity");
   let totalCartPrice = 0;
@@ -73,6 +86,7 @@ function totalPriceRefresh() {
   totalPriceDisplay.innerHTML = totalCartPrice;
 }
 
+// Actualise the total amount of article in the cart
 function totalItemInCartRefresh() {
   let quantitySelector = document.querySelectorAll(".itemQuantity");
   let itemAmount = 0;
@@ -82,10 +96,13 @@ function totalItemInCartRefresh() {
   const totalQuantityDisplay = document.getElementById("totalQuantity");
   totalQuantityDisplay.innerHTML = itemAmount;
 
+  // Call new total price function on change
   totalPriceRefresh();
+  // Check if they'r is no article
   checkIfCartEmpty();
 }
 
+// Deleting item work on the DOM and localStorage
 function deleteItem() {
   let deleteItemBtns = document.querySelectorAll(".deleteItem");
   for (let i = 0; i < deleteItemBtns.length; i++) {
@@ -97,15 +114,17 @@ function deleteItem() {
       let itemColor = articleDOM.dataset.color;
       let itemQuantity = localStorage.getItem(localStorage.key(i));
       let localStorageKey = [itemId, itemColor];
-
+      // Deleting in localStorage and in the DOM
       localStorage.removeItem(localStorageKey, itemQuantity);
       articleDOM.remove();
 
+      // Actualising the total amount of item in the cart
       totalItemInCartRefresh();
     });
   }
 }
 
+// Modifying item quantity in total and localStorage
 function itemQuantityRefresh() {
   let quantitySelector = document.querySelectorAll(".itemQuantity");
   for (let i = 0; i < quantitySelector.length; i++) {
@@ -118,15 +137,19 @@ function itemQuantityRefresh() {
       let localStorageKey = [itemId, itemColor];
       let itemQuantity = e.target.value;
       if (itemQuantity == 0) {
-        alert("Il faut au moins ajouter un Kanap");
+        alert("Il faut au moins ajouter un Kanap 🛋️");
       }
       localStorage.setItem(localStorageKey, itemQuantity);
 
+      // Actualising the total amount of article
       totalItemInCartRefresh();
     });
   }
 }
 
+/*** USER DATA MANIPULATION ***/
+
+// Object for user input
 class Form {
   constructor() {
     this.firstName = document.getElementById("firstName").value;
@@ -137,9 +160,10 @@ class Form {
   }
 }
 
+// Analysing user input with regex
 function userInputVerification() {
   const userForm = new Form();
-
+  // Firstname
   function firstNameValid() {
     const userFirstName = userForm.firstName;
     const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
@@ -151,7 +175,7 @@ function userInputVerification() {
         "Votre prénom ne peut contenir que des lettres, de 3 à 20 caractères.";
     }
   }
-
+  // Lastname
   function lastNameValid() {
     const userLastName = userForm.lastName;
     const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
@@ -163,7 +187,7 @@ function userInputVerification() {
         "Votre nom ne peut contenir que des lettres, de 2 à 20 caractères.";
     }
   }
-
+  // Adresse
   function adressValid() {
     const userAdress = userForm.adress;
     const addressErrorMsg = document.getElementById("addressErrorMsg");
@@ -174,7 +198,7 @@ function userInputVerification() {
       addressErrorMsg.innerText = "L'adresse semble incorrect.";
     }
   }
-
+  // City
   function cityValid() {
     const userCity = userForm.city;
     const cityErrorMsg = document.getElementById("cityErrorMsg");
@@ -186,7 +210,7 @@ function userInputVerification() {
         "La ville ne peut contenir que des lettres, de 2 à 20 caractères.";
     }
   }
-
+  // Email
   function emailValid() {
     const userEmail = userForm.email;
     const emailErrorMsg = document.getElementById("emailErrorMsg");
@@ -211,6 +235,7 @@ function userInputVerification() {
   }
 }
 
+// Push cart products id in an array
 function productToSend() {
   let userBasket = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -222,6 +247,7 @@ function productToSend() {
   return userBasket;
 }
 
+// Send info to the back if valid, request orderId
 let userFormSubmit = document.getElementById("order");
 userFormSubmit.addEventListener("click", (e) => {
   e.preventDefault();
@@ -238,7 +264,7 @@ userFormSubmit.addEventListener("click", (e) => {
       },
       products,
     };
-
+    // POSTing on the API
     fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {
@@ -247,6 +273,7 @@ userFormSubmit.addEventListener("click", (e) => {
       },
       body: JSON.stringify(toSend),
     })
+      // Storing order Id in the url
       .then((response) => response.json())
       .then((value) => {
         localStorage.clear();
