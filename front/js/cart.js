@@ -137,7 +137,7 @@ function itemQuantityRefresh() {
       let localStorageKey = [itemId, itemColor];
       let itemQuantity = e.target.value;
       if (itemQuantity == 0) {
-        alert("Il faut au moins ajouter un Kanap 🛋️");
+        alert("Il faut au moins ajouter un Kanap");
       }
       localStorage.setItem(localStorageKey, itemQuantity);
 
@@ -167,24 +167,24 @@ function userInputVerification() {
   function firstNameValid() {
     const userFirstName = userForm.firstName;
     const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
-    if (/^([A-Za-z]{3,20})?([-]{0,1})?([A-Za-z]{3,20})$/.test(userFirstName)) {
+    if (/^([A-Za-z]{1,40})?([-]{0,1})?([A-Za-z]{1,40})$/.test(userFirstName)) {
       firstNameErrorMsg.innerText = "";
       return true;
     } else {
       firstNameErrorMsg.innerText =
-        "Votre prénom ne peut contenir que des lettres, de 3 à 20 caractères.";
+        "Votre prénom ne peut contenir que des lettres, de 1 à 40 caractères.";
     }
   }
   // Lastname
   function lastNameValid() {
     const userLastName = userForm.lastName;
     const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
-    if (/^[A-Za-z]{2,20}$/.test(userLastName)) {
+    if (/^[A-Za-z]{1,40}$/.test(userLastName)) {
       lastNameErrorMsg.innerText = "";
       return true;
     } else {
       lastNameErrorMsg.innerText =
-        "Votre nom ne peut contenir que des lettres, de 2 à 20 caractères.";
+        "Votre nom ne peut contenir que des lettres, de 1 à 40 caractères.";
     }
   }
   // Adresse
