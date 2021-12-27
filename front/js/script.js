@@ -11,7 +11,7 @@ async function getItems() {
   let items = await getItems();
   let htmlRender = "";
   items.forEach((item) => {
-    let htmlContent = `
+    htmlRender += `
 		<a href="./product.html?id=${item._id}">
 			<article>
 				<img src="${item.imageUrl}" alt="${item.altTxt}">
@@ -22,6 +22,5 @@ async function getItems() {
 		`;
     htmlRender += htmlContent;
   });
-  const itemContainer = document.getElementById("items");
-  itemContainer.innerHTML += htmlRender;
+  document.getElementById("items").innerHTML = htmlRender;
 })();
