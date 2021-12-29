@@ -9,7 +9,7 @@ async function getInfoWithId(i) {
     let response = await fetch(`http://localhost:3000/api/products/${itemId}`);
     return await response.json();
   } catch (error) {
-    console.log("Error : " + error);
+    console.error("Error : " + error);
   }
 }
 
@@ -30,10 +30,11 @@ function checkIfCartEmpty() {
   // Else begin the loop
   for (let i = 0; i < localStorage.length; i++) {
     let item = await getInfoWithId(i);
+    const itemColor = localStorage.key(i).split(",")[1];
+    const itemQuantity = localStorage.getItem(localStorage.key(i));
+
     let htmlContent = `
-		<article class="cart__item" data-id="${item._id}" data-color="${
-      localStorage.key(i).split(",")[1]
-    }" data-price="${item.price}">
+		<article class="cart__item" data-id="${item._id}" data-color="${itemColor}" data-price="${item.price}">
 			<div class="cart__item__img">
 				<img src="${item.imageUrl}" alt="${item.altTxt}">
 			</div>
@@ -41,14 +42,12 @@ function checkIfCartEmpty() {
 				<div class="cart__item__content__titlePrice">
 					<h2>${item.name}</h2>
 					<p>${item.price} €</p>
-					<p>Coloris : ${localStorage.key(i).split(",")[1]}</p>
+					<p>Coloris : ${itemColor}</p>
 				</div>
 				<div class="cart__item__content__settings">
 					<div class="cart__item__content__settings__quantity">
 						<p>Qté : </p>
-						<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${localStorage.getItem(
-              localStorage.key(i)
-            )}">
+						<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${itemQuantity}">
 					</div>
 					<div class="cart__item__content__settings__delete">
 						<p class="deleteItem">Supprimer</p>
@@ -78,9 +77,9 @@ function totalPriceRefresh() {
   let quantitySelector = document.querySelectorAll(".itemQuantity");
   let totalCartPrice = 0;
   for (let i = 0; i < quantitySelector.length; i++) {
-    let articleDOM = quantitySelector[i].closest("article");
-    let individualPrice = articleDOM.dataset.price;
-    totalCartPrice += parseInt(quantitySelector[i].value) * individualPrice;
+    totalCartPrice +=
+      parseInt(quantitySelector[i].value) *
+      quantitySelector[i].closest("article").dataset.price;
   }
   let totalPriceDisplay = document.getElementById("totalPrice");
   totalPriceDisplay.innerHTML = totalCartPrice;
