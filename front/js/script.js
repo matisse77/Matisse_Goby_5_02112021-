@@ -1,29 +1,30 @@
-// Get all the information from the API
-async function getItems() {
-  try {
-    let response = await fetch("http://localhost:3000/api/products");
-    return await response.json();
-  } catch (error) {
-    console.log("Error : " + error);
-  }
-}
+(function () {
+  const itemsContainer = document.getElementById("items");
 
-// Handle the render on the HTML
-(async function renderItems() {
-  let items = await getItems();
-  let htmlRender = "";
-  items.forEach((item) => {
-    let htmlContent = `
-		<a href="./product.html?id=${item._id}">
-			<article>
-				<img src="${item.imageUrl}" alt="${item.altTxt}">
-				<h3 class="productName">${item.name}</h3>
-				<p class="productDescription">${item.description}</p>
-			</article>
-		</a>
-		`;
-    htmlRender += htmlContent;
-  });
-  const itemContainer = document.getElementById("items");
-  itemContainer.innerHTML += htmlRender;
+  async function retrieveAndDisplayProducts() {
+    const response = await fetch("http://localhost:3000/api/products/");
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error! Status: ${response.status}`);
+    }
+
+    const products = await response.json();
+    let productsDisplay = "";
+
+    products.forEach(function (product) {
+      productsDisplay += `
+      <a href="./product.html?id=${product._id}">
+        <article>
+         <img src="${product.imageUrl}" alt="${product.altTxt}">
+         <h3 class="productName">${product.name}</h3>
+         <p class="productDescription">${product.description}</p>
+       </article>
+      </a>
+    `;
+    });
+
+    itemsContainer.innerHTML = productsDisplay;
+  }
+
+  retrieveAndDisplayProducts();
 })();
