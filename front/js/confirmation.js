@@ -1,15 +1,13 @@
 // Getting the order Id with the URL
 function idRecuperation() {
-  let url = new URL(window.location.href);
-  let searchParams = new URLSearchParams(url.search);
+  const url = new URL(window.location.href);
+  const searchParams = new URLSearchParams(url.search);
   if (searchParams.has("id")) {
-    let id = searchParams.get("id");
-    return id;
-  } else {
-    console.log("Error, no order Id found");
+    return searchParams.get("id");
   }
+
+  console.error("Error, no order Id found");
 }
 window.addEventListener("load", () => {
-  const orderId = document.getElementById("orderId");
-  orderId.innerText = idRecuperation();
+  document.getElementById("orderId").innerText = idRecuperation();
 });
