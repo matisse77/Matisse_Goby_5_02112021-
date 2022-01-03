@@ -1,4 +1,6 @@
 /*** LOCAL STORAGE & DISPLAY ON CART PAGE ***/
+const nameRegex =
+  /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u;
 
 // Get id from localStorage key(i)
 async function getInfoWithId(i) {
@@ -166,7 +168,7 @@ function userInputVerification() {
   function firstNameValid() {
     const userFirstName = userForm.firstName;
     const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
-    if (/^([A-Za-z]{1,40})?([-]{0,1})?([A-Za-z]{1,40})$/.test(userFirstName)) {
+    if (nameRegex.test(userFirstName)) {
       firstNameErrorMsg.innerText = "";
       return true;
     } else {
@@ -178,7 +180,7 @@ function userInputVerification() {
   function lastNameValid() {
     const userLastName = userForm.lastName;
     const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
-    if (/^[A-Za-z]{1,40}$/.test(userLastName)) {
+    if (nameRegex.test(userLastName)) {
       lastNameErrorMsg.innerText = "";
       return true;
     } else {
