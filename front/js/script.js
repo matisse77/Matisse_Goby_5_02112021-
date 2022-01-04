@@ -1,35 +1,29 @@
 // Get all the information from the API
-displayProducts();
-async function getProducts() {
-  return await fetch("http://localhost:3000/api/products")
-    .then(function (res) {
-      return res.json();
-    })
-    .then(function (value) {
-      console.log(value);
-      return value;
-    })
-    .catch(function (err) {
-      console.error(err);
-    });
+async function getItems() {
+  try {
+    let response = await fetch("http://localhost:3000/api/products");
+    return await response.json();
+  } catch (error) {
+    console.log("Error : " + error);
+  }
 }
 
 // Handle the render on the HTML
-async function displayProducts() {
-  const parser = new DOMParser();
-  const products = await getProducts();
-  console.log("displayProducts", products);
-  let productsSection = document.getElementById("items");
-  for (i = 0; i < products.length; i++) {
-    let productsItems = `
-      <a href="./product.html?id=${products[i]._id}">
-      <article>
-      <img src="${products[i].imageUrl}" alt="${products[i].altTxt}">
-      <h3 class="productName">${products[i].name}</h3>
-      <p class="productDescription">${products[i].description}</p>
-      </article> 
-      </a>`;
-    const displayShop = parser.parseFromString(productsItems, "text/html");
-    productsSection.appendChild(displayShop.body.firstChild);
-  }
-}
+(async function renderItems() {
+  let items = await getItems();
+  let htmlRender = "";
+  items.forEach((item) => {
+    let htmlContent = `
+		<a href="./product.html?id=${item._id}">
+			<article>
+				<img src="${item.imageUrl}" alt="${item.altTxt}">
+				<h3 class="productName">${item.name}</h3>
+				<p class="productDescription">${item.description}</p>
+			</article>
+		</a>
+		`;
+    htmlRender += htmlContent;
+  });
+  const itemContainer = document.getElementById("items");
+  itemContainer.innerHTML += htmlRender;
+})();
