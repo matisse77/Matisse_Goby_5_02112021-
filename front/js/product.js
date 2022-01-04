@@ -1,60 +1,113 @@
-// Check for the Id parameter in URL
-function idVerification() {
-  let searchParams = new URLSearchParams(new URL(window.location.href).search);
+// Get Id
+const str = window.location;
+const url = new URL(str);
+const productId = url.searchParams.get("id");
+const objectURL = "http://localhost:3000/api/products/" + productId;
 
-  if (!searchParams.has("id")) {
-    console.error("Error, no Id found in the URL!");
-    return;
+// Add product in cart
+function addToCart(productItem) {
+  let cartItems = localStorage.getItem("cartItems");
+  // If cart empty
+  if (cartItems === null) {
+    let items = [productItem];
+    console.log(items);
+    let itemsStr = JSON.stringify(items);
+    localStorage.setItem("cartItems", itemsStr);
+    alert("Produit ajouté au panier !");
+  } else {
+    // If product in cart with the same id and color
+    let items = JSON.parse(cartItems);
+    const resultat = items.find((product) => {
+      if (product.id === productItem.id && product.color === productItem.color)
+        return true;
+
+      return false;
+    });
+
+    if (resultat != undefined) {
+      items = items.map((item, index) => {
+        if (item.id === productItem.id && item.color === productItem.color) {
+          item.quantity += productItem.quantity;
+        }
+
+        return item;
+      });
+    } else {
+      // If cart had different product
+      items.push(productItem);
+    }
+    let itemsStr = JSON.stringify(items);
+    localStorage.setItem("cartItems", itemsStr);
+    alert("Produit ajouté au panier !");
   }
-
-  return searchParams.get("id");
 }
 
-// Only get the information for the specified product
-async function getInfoById() {
-  try {
-    let response = await fetch(
-      `http://localhost:3000/api/products/${idVerification()}`
-    );
-    return await response.json();
-  } catch (error) {
-    console.log("Error : " + error);
-  }
-}
+// Get all the information from the API
+function displayProduct() {
+  fetch("http://localhost:3000/api/products/" + productId)
+    .then(function (res) {
+      return res.json();
+    })
+    .catch((err) => {
+      console.error("erreur");
+    })
 
-// Handle the render on the HTML
-(async function renderItem() {
-  const item = await getInfoById();
+    // Handle the render on the HTML
+    .then(function (getProduct) {
+      const product = getProduct;
 
-  document.querySelector(
-    ".item__img"
-  ).innerHTML += `<img src="${item.imageUrl}" alt="${item.altTxt}">`;
-  document.getElementById("title").innerHTML += item.name;
-  document.getElementById("price").innerHTML += item.price;
-  document.getElementById("description").innerHTML += item.description;
-  // Choice of item colors
-  item.colors.forEach((color) => {
-    let htmlContent = `<option value="${color}">${color}</option>`;
-    document.getElementById("colors").innerHTML += htmlContent;
+      let productTitle = document.querySelector("title");
+      productTitle.textContent = `${product.name}`;
+
+      let productImg = document.createElement("img");
+      document.querySelector(".item__img").appendChild(productImg);
+      productImg.setAttribute("src", `${product.imageUrl}`);
+      productImg.setAttribute("alt", `${product.altTxt}`);
+
+      let productName = document.getElementById("title");
+      productName.textContent = `${product.name}`;
+
+      let productPrice = document.getElementById("price");
+      productPrice.textContent = `${product.price}`;
+
+      let productDescription = document.getElementById("description");
+      productDescription.textContent = `${product.description}`;
+
+      document.querySelector("#colors").insertAdjacentHTML(
+        "beforeend",
+        product.colors.map(
+          (color) =>
+            `<option id= "valueColor" value="${color}">${color}</option>`
+        )
+      );
+    });
+
+  // Listen to the event on the add to cart button
+  const cartButton = document.getElementById("addToCart");
+  cartButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    let productColor = document.getElementById("colors").value;
+    let productQuantity = parseInt(document.getElementById("quantity").value);
+    // If no colour chosen
+    if (productColor == "") {
+      alert("Veuillez sélectionner une couleur");
+      return;
+    }
+    // If quantity = 0
+    if (productQuantity == 0) {
+      alert("Veuillez renseigner une quantité");
+      return;
+    } else if (productQuantity > 100) {
+      alert("La quantité maximale autorisée est de 100");
+      return;
+    }
+    // Creation of array containing the id, color, quantity
+    const productOptions = {
+      id: productId,
+      color: productColor,
+      quantity: productQuantity,
+    };
+    addToCart(productOptions);
   });
-})();
-
-// Add to cart & localStorage
-const addToCartBtn = document.getElementById("addToCart");
-addToCartBtn.addEventListener("click", () => {
-  const itemColor = document.getElementById("colors").value;
-  const itemQuantity = document.getElementById("quantity").value;
-
-  if (document.getElementById("colors").value === "") {
-    alert("Il est nécessaire de choisir une couleur");
-    return;
-  }
-
-  if (document.getElementById("quantity").value == 0) {
-    alert("Il faut au moins ajouter un Kanap");
-    return;
-  }
-
-  localStorage.setItem([idVerification(), itemColor], itemQuantity);
-  window.location.href = "./cart.html";
-});
+}
+displayProduct();
