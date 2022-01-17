@@ -30,13 +30,13 @@ async function getItems() {
     itemArticle.appendChild(itemImg);
 
     itemArticle.appendChild(
-      createElementWithClassAndContent('h3', 'productName', item.name)
+      createElementWithClassAndContent('h3', 'product-dame', item.name)
     );
 
     itemArticle.appendChild(
       createElementWithClassAndContent(
         'p',
-        'productDescription',
+        'product-description',
         item.description
       )
     );
