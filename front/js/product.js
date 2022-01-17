@@ -1,47 +1,57 @@
+const MAX_ITEM_QUANTITY = 100;
+
 // Check for the Id parameter in URL
-function idVerification() {
+function getId() {
   let searchParams = new URLSearchParams(new URL(window.location.href).search);
 
-  if (!searchParams.has("id")) {
-    console.error("Error, no Id found in the URL!");
+  if (!searchParams.has('id')) {
+    console.error('Error, no Id found in the URL!');
     return;
   }
 
-  return searchParams.get("id");
+  return searchParams.get('id');
 }
 
 // Only get the information for the specified product
 async function getInfoById() {
   try {
-    let response = await fetch(
-      `http://localhost:3000/api/products/${idVerification()}`
-    );
+    let response = await fetch(`http://localhost:3000/api/products/${getId()}`);
     return await response.json();
   } catch (error) {
-    console.error("Error : " + error);
+    console.error('Error : ' + error);
   }
 }
 
 // Handle the render on the HTML
 (async function renderItem() {
   const item = await getInfoById();
-
-  document.querySelector(
-    ".item__img"
-  ).innerHTML += `<img src="${item.imageUrl}" alt="${item.altTxt}">`;
-  document.getElementById("title").innerHTML += item.name;
-  document.getElementById("price").innerHTML += item.price;
-  document.getElementById("description").innerHTML += item.description;
+  const img = document.createElement('img');
+  img.setAttribute('src', item.imageUrl);
+  img.setAttribute('alt', item.altTxt);
+  document.querySelector('.item__img').appendChild(img);
+  document
+    .getElementById('title')
+    .appendChild(document.createTextNode(item.name));
+  document
+    .getElementById('price')
+    .appendChild(document.createTextNode(item.price));
+  document
+    .getElementById('description')
+    .appendChild(document.createTextNode(item.description));
   // Choice of item colors
+  const colorsSelect = document.getElementById('colors');
   item.colors.forEach((color) => {
-    let htmlContent = `<option value="${color}">${color}</option>`;
-    document.getElementById("colors").innerHTML += htmlContent;
+    const colorOption = document.createElement('option');
+    colorOption.setAttribute('value', color);
+    colorOption.appendChild(document.createTextNode(color));
+    colorsSelect.appendChild(colorOption);
   });
 })();
 
 // Add to cart & localStorage
-const addToCartBtn = document.getElementById("addToCart");
-addToCartBtn.addEventListener("click", () => {
+const addToCartBtn = document.getElementById('addToCart');
+addToCartBtn.addEventListener('click', () => {
+  //localStorage.clear();
   addCurrentItemToCart();
 
   return redirectToCart();
@@ -49,52 +59,70 @@ addToCartBtn.addEventListener("click", () => {
 
 const addCurrentItemToCart = () => {
   const item = {
-    color: document.getElementById("colors").value,
-    quantity: document.getElementById("quantity").value,
+    color: document.getElementById('colors').value,
+    quantity: document.getElementById('quantity').value,
   };
 
   if (!validateItemColor(item.color)) {
-    alert("Il est nécessaire de choisir une couleur");
+    alert('Il est nécessaire de choisir une couleur');
     return;
   }
 
   if (!validateItemQuantity(item.quantity)) {
-    alert("Il faut au moins ajouter un Kanap");
     return;
   }
 
-  if (itemAlreadyExistsInCart(item)) {
-    return updateExistingItem(item);
+  if (itemAlreadyExistsInCart(item.color)) {
+    return updateExistingItem(item.quantity);
   }
 
   addItemInCart(item);
 };
 
 const validateItemColor = (color) => {
-  return color !== "";
+  return color !== '';
 };
 
 const validateItemQuantity = (itemQuantity) => {
-  return itemQuantity > 0 && itemQuantity <= 100;
+  if (itemQuantity <= 0) {
+    alert('Il faut au moins ajouter un Kanap');
+    return false;
+  }
+  if (itemQuantity > MAX_ITEM_QUANTITY) {
+    alert(`Le nombre de kanap ne doit pas dépasser ${MAX_ITEM_QUANTITY}`);
+    return false;
+  }
+  return true;
 };
 
-const itemAlreadyExistsInCart = (item) => {
-  return localStorage.hasItem;
+const itemAlreadyExistsInCart = (color) => {
+  const item = localStorage.getItem(getId() + color);
+  if (item) {
+    const itemColor = item.split(',')[0];
+    return itemColor === color;
+  }
+  return false;
 };
 
-const updateExistingItem = () => {
-  const sameItem = localStorage.get("...");
+const updateExistingItem = (quantity, color) => {
+  const sameItem = localStorage.getItem(getId() + color);
+  console.log(sameItem);
+  const [sameItemColor, sameItemQuantity] = sameItem.split(',');
+  let newQuantity = parseInt(sameItemQuantity) + parseInt(quantity);
+  if (newQuantity > MAX_ITEM_QUANTITY) {
+    alert(
+      `Le nombre de kanap dans votre panier ne peut pas dépasser ${MAX_ITEM_QUANTITY}`
+    );
+    newQuantity = MAX_ITEM_QUANTITY;
+  }
 
-  const newQuantity =
-    sameItem.quantity + document.getElementById("quantity").value;
-
-  // Update
+  localStorage.setItem(getId() + sameItemColor, [sameItemColor, newQuantity]);
 };
 
 const addItemInCart = (item) => {
-  localStorage.setItem([idVerification(), item.color], item.quantity);
+  localStorage.setItem(getId() + item.color, [item.color, item.quantity]);
 };
 
 const redirectToCart = () => {
-  window.location.href = "./cart.html";
+  window.location.href = './cart.html';
 };
