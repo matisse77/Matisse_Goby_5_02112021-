@@ -73,7 +73,7 @@ const addCurrentItemToCart = () => {
   }
 
   if (itemAlreadyExistsInCart(item.color)) {
-    return updateExistingItem(item.quantity);
+    return updateExistingItem(item.quantity, item.color);
   }
 
   addItemInCart(item);
@@ -97,6 +97,7 @@ const validateItemQuantity = (itemQuantity) => {
 
 const itemAlreadyExistsInCart = (color) => {
   const item = localStorage.getItem(getId() + color);
+  console.log(item, color);
   if (item) {
     const itemColor = item.split(',')[0];
     return itemColor === color;
@@ -106,7 +107,6 @@ const itemAlreadyExistsInCart = (color) => {
 
 const updateExistingItem = (quantity, color) => {
   const sameItem = localStorage.getItem(getId() + color);
-  console.log(sameItem);
   const [sameItemColor, sameItemQuantity] = sameItem.split(',');
   let newQuantity = parseInt(sameItemQuantity) + parseInt(quantity);
   if (newQuantity > MAX_ITEM_QUANTITY) {
