@@ -97,7 +97,6 @@ const validateItemQuantity = (itemQuantity) => {
 
 const itemAlreadyExistsInCart = (color) => {
   const item = localStorage.getItem(getId() + color);
-  console.log(item, color);
   if (item) {
     const itemColor = item.split(',')[0];
     return itemColor === color;
