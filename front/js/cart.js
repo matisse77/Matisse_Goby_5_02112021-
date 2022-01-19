@@ -26,9 +26,7 @@ function checkIfCartEmpty() {
     cartA.style['font-weight'] = '700';
     cartA.appendChild(document.createTextNode('notre séléction'));
     cartP.appendChild(cartA);
-    console.log(cartItems);
     cartItems.appendChild(cartP);
-    console.log(cartItems);
   }
 }
 
